@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TodoList() {
     const [task, setTask] = useState(["Eat BreakFast", "coffee"])
@@ -7,30 +9,38 @@ function TodoList() {
 
     const handleInputChange = (e) => {
         setNewTask(e.target.value)
-    }
+    } 
 
     const addTask = () => {
-        if (newTask.trim() !== "") {
-            if (editIndex !== null) {
-                const updatedTasks = [...task];
-                updatedTasks[editIndex] = newTask;
-                setTask(updatedTasks);
-                setEditIndex(null);
-            } else {
-                setTask(t => [...t, newTask]);
-            }
-            setNewTask("")
+        if (newTask.trim() === "") {
+            toast.error("Task cannot be empty!") 
+            return;
         }
+
+        if (editIndex !== null) {
+            const updatedTasks = [...task];
+            updatedTasks[editIndex] = newTask;
+            setTask(updatedTasks);
+            setEditIndex(null);
+            toast.success("Task updated!") 
+        } else {
+            setTask(t => [...t, newTask]);
+            toast.success("Task added!") 
+        }
+
+        setNewTask("")
     }
 
     const deleteTask = (index) => {
         const updateTask = task.filter((_, i) => i !== index)
         setTask(updateTask)
+        toast.info("Task deleted") 
     }
 
     const editTask = (index) => {
         setNewTask(task[index]);
         setEditIndex(index);
+        // toast.info("Editing task...") 
     }
 
     const handleKeyPress = (e) => {
@@ -174,6 +184,9 @@ function TodoList() {
                     ))}
                 </ul>
             )}
+
+            {/* ✅ Add ToastContainer here */}
+            <ToastContainer position="top-center" autoClose={1000} />
         </div>
     )
 }
